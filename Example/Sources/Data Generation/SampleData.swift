@@ -31,14 +31,14 @@ final internal class SampleData {
 
     private init() {}
 
-    let system = Sender(id: "000000", displayName: "System")
-    let nathan = Sender(id: "000001", displayName: "Nathan Tannar")
-    let steven = Sender(id: "000002", displayName: "Steven Deutsch")
-    let wu = Sender(id: "000003", displayName: "Wu Zhong")
+    let system = MockUser(id: "000000", displayName: "System")
+    let nathan = MockUser(id: "000001", displayName: "Nathan Tannar")
+    let steven = MockUser(id: "000002", displayName: "Steven Deutsch")
+    let wu = MockUser(id: "000003", displayName: "Wu Zhong")
 
     lazy var senders = [nathan, steven, wu]
 
-    var currentSender: Sender {
+    var currentSender: MockUser {
         return nathan
     }
 
@@ -117,7 +117,7 @@ final internal class SampleData {
         }
     }
 
-    func randomMessage(isCustomEnabled: Bool, allowedSenders: [Sender]) -> MockMessage {
+    func randomMessage(isCustomEnabled: Bool, allowedSenders: [MockUser]) -> MockMessage {
 
         let randomNumberSender = Int(arc4random_uniform(UInt32(allowedSenders.count)))
         let randomNumberImage = Int(arc4random_uniform(UInt32(messageImages.count)))
@@ -127,31 +127,31 @@ final internal class SampleData {
         
         let randomSentance = Lorem.sentence()
         let uniqueID = NSUUID().uuidString
-        let sender = allowedSenders[randomNumberSender]
+        let user = allowedSenders[randomNumberSender]
         let date = dateAddingRandomTime()
 
         switch messageTypes[randomMessageType] {
         case "Text":
-            return MockMessage(text: randomSentance, sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(text: randomSentance, user: user, messageId: uniqueID, date: date)
         case "AttributedText":
             let attributedText = attributedString(with: randomSentance)
-            return MockMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date)
+            return MockMessage(attributedText: attributedText, user: user, messageId: uniqueID, date: date)
         case "Photo":
             let image = messageImages[randomNumberImage]
-            return MockMessage(image: image, sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(image: image, user: user, messageId: uniqueID, date: date)
         case "Video":
             let image = messageImages[randomNumberImage]
-            return MockMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(thumbnail: image, user: user, messageId: uniqueID, date: date)
         case "Emoji":
-            return MockMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(emoji: emojis[randomNumberEmoji], user: user, messageId: uniqueID, date: date)
         case "Location":
-            return MockMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(location: locations[randomNumberLocation], user: user, messageId: uniqueID, date: date)
         case "URL":
-            return MockMessage(text: "https://github.com/MessageKit", sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(text: "https://github.com/MessageKit", user: user, messageId: uniqueID, date: date)
         case "Phone":
-            return MockMessage(text: "123-456-7890", sender: sender, messageId: uniqueID, date: date)
+            return MockMessage(text: "123-456-7890", user: user, messageId: uniqueID, date: date)
         case "Custom":
-            return MockMessage(custom: "Someone left the conversation", sender: system, messageId: uniqueID, date: date)
+            return MockMessage(custom: "Someone left the conversation", user: system, messageId: uniqueID, date: date)
         default:
             fatalError("Unrecognized mock message type")
         }
@@ -175,7 +175,7 @@ final internal class SampleData {
         completion(messages)
     }
     
-    func getMessages(count: Int, allowedSenders: [Sender], completion: ([MockMessage]) -> Void) {
+    func getMessages(count: Int, allowedSenders: [MockUser], completion: ([MockMessage]) -> Void) {
         var messages: [MockMessage] = []
         for _ in 0..<count {
             let message = randomMessage(isCustomEnabled: false, allowedSenders: allowedSenders)
@@ -184,18 +184,18 @@ final internal class SampleData {
         completion(messages)
     }
 
-    func getAvatarFor(sender: Sender) -> Avatar {
+    func getAvatarFor(sender: SenderType) -> Avatar {
         let firstName = sender.displayName.components(separatedBy: " ").first
         let lastName = sender.displayName.components(separatedBy: " ").first
         let initials = "\(firstName?.first ?? "A")\(lastName?.first ?? "A")"
-        switch sender {
-        case nathan:
+        switch sender.id {
+        case "000001":
             return Avatar(image: #imageLiteral(resourceName: "Nathan-Tannar"), initials: initials)
-        case steven:
+        case "000002":
             return Avatar(image: #imageLiteral(resourceName: "Steven-Deutsch"), initials: initials)
-        case wu:
+        case "000003":
             return Avatar(image: #imageLiteral(resourceName: "Wu-Zhong"), initials: initials)
-        case system:
+        case "000000":
             return Avatar(image: nil, initials: "SS")
         default:
             return Avatar(image: nil, initials: initials)

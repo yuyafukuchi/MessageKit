@@ -37,12 +37,12 @@ final class MockSocket {
     
     private var onTypingStatusCode: (() -> Void)?
     
-    private var connectedUsers: [Sender] = []
+    private var connectedUsers: [MockUser] = []
     
     private init() {}
     
     @discardableResult
-    func connect(with senders: [Sender]) -> Self {
+    func connect(with senders: [MockUser]) -> Self {
         disconnect()
         connectedUsers = senders
         timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(handleTimer), userInfo: nil, repeats: true)
@@ -76,8 +76,8 @@ final class MockSocket {
             onNewMessageCode?(message)
             queuedMessage = nil
         } else {
-            let sender = arc4random_uniform(1) % 2 == 0 ? connectedUsers.first! : connectedUsers.last!
-            queuedMessage = MockMessage(text: Lorem.sentence(), sender: sender, messageId: UUID().uuidString, date: Date())
+            let user = arc4random_uniform(1) % 2 == 0 ? connectedUsers.first! : connectedUsers.last!
+            queuedMessage = MockMessage(text: Lorem.sentence(), user: user, messageId: UUID().uuidString, date: Date())
             onTypingStatusCode?()
         }
     }
