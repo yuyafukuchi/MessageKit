@@ -73,16 +73,20 @@ public struct AvatarPosition {
     
     // The horizontal position
     public var horizontal: Horizontal
+
+    // The horizontal padding
+    public var padding: HorizontalEdgeInsets
     
     // MARK: - Initializers
     
-    public init(horizontal: Horizontal, vertical: Vertical) {
+    public init(horizontal: Horizontal, vertical: Vertical, padding: HorizontalEdgeInsets = .zero) {
         self.horizontal = horizontal
         self.vertical = vertical
+        self.padding = padding
     }
 
-    public init(vertical: Vertical) {
-        self.init(horizontal: .natural, vertical: vertical)
+    public init(vertical: Vertical, padding: HorizontalEdgeInsets = .zero) {
+        self.init(horizontal: .natural, vertical: vertical, padding: padding)
     }
     
 }
@@ -92,7 +96,7 @@ public struct AvatarPosition {
 extension AvatarPosition: Equatable {
 
     public static func == (lhs: AvatarPosition, rhs: AvatarPosition) -> Bool {
-        return lhs.vertical == rhs.vertical && lhs.horizontal == rhs.horizontal
+        return lhs.vertical == rhs.vertical && lhs.horizontal == rhs.horizontal && lhs.padding == rhs.padding
     }
 
 }
