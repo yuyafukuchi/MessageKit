@@ -246,7 +246,8 @@ open class MessageContentCell: MessageCollectionViewCell {
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
 
-        messageContainerView.frame = CGRect(origin: origin, size: attributes.messageContainerSize)
+        let size = CGSize(width: attributes.messageContainerSize.width - avatarPadding.horizontal, height: attributes.messageContainerSize.height)
+        messageContainerView.frame = CGRect(origin: origin, size: size)
     }
 
     /// Positions the cell's top label.
